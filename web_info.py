@@ -6,9 +6,10 @@ import os
 import datetime,time
 import re,json
 
-from value import Infos
+from config import Infos, STUDENT_ID, STUDENT_PASSWD,RECEIVERS
 from log import logger
 from Semail import Email
+from Student import Stu
 
 
 class Info(object):
@@ -155,11 +156,83 @@ class Info(object):
         # except Exception as e:
         #     logger.error('There is a error when work:%s'%e)
 
+class Info2(object):
+
+    def __init__(self, receivers):
+        self.stu = Stu(STUDENT_ID, STUDENT_PASSWD)
+        self.receivers = receivers
+        self.filename = 'stu_achi_data.json'
+        try:
+            with open(os.path.join(os.getcwd(),self.filename) )as f:
+                data=json.load(f)
+                self.list=data['list']
+                self.update=data['update']
+        except FileNotFoundError as e:
+            logger.info('create data file: %s'%self.filename)
+            self.list=[]
+            self.update=0
+            self.save_date()
+
+
+    def save_date(self):
+        '''
+        将数据保存到json文件中
+        :return: 
+        '''
+        data = {'list': self.list, 'update': self.update}
+        with open(os.path.join(os.getcwd(),self.filename), 'w') as f:
+            json.dump(data,f)
+
+    def compare(self):
+        '''
+        对比两次情况，并更新list
+        :return: 返回多出来的部分
+        '''
+        new_list = self.stu.get_achievement()
+        ht = {}
+        for old_item in self.list:
+            ht[old_item['key']] = old_item['course_name']
+        # 判断是否有新的
+        res_list = []
+        for new_item in new_list:
+            if(new_item['key'] not in ht):
+                res_list.append(new_item)
+        self.list = new_list
+        return res_list
+
+    def send_email_new(self,diff_lists):
+        '''
+        将重要信息发送邮件给指定联系人
+        :param imp_lists: 
+        :return: 
+        '''
+        e = Email()
+        email_content = ''
+        for item in diff_lists:
+            email_content = email_content + item['course_name'] + '\n'
+        title = "关于成绩更新的通知"
+        content = '你好！\n' \
+                  '  下列课程成绩已出，请注意查询：\n' \
+                  '  %s\n\n\n' \
+                  '本邮件由热心人Sixzeroo自动发送，联系方式QQ：1790798600' %(email_content)
+        try:
+            e.send_email(self.receivers,content,title)
+            logger.info('successful send email to %s etc'%self.receivers[0])
+        except Exception as e:
+            logger.error('When it send email,there are error: %s'%e)
+
+    def work(self):
+        diff = self.compare()
+        if(len(diff) != 0):
+            self.send_email_new(diff)
+        self.save_date()
+
 
 
 if __name__ == '__main__':
-    for item in Infos:
-        info = Info(item['url'],item['re_key'],item['receivers'],item['name'])
-        info.work()
-
+    # for item in Infos:
+    #     info = Info(item['url'],item['re_key'],item['receivers'],item['name'])
+    #     info.work()
+    instance = Info2(RECEIVERS)
+    instance.work()
 

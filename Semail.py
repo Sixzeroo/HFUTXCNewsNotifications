@@ -4,7 +4,7 @@ from email.header import Header
 from email.mime.text import MIMEText
 from smtplib import SMTP
 
-from value import EMAIL_CONFIG,RECEIVERS
+from config import EMAIL_CONFIG
 
 
 

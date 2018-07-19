@@ -1,3 +1,5 @@
+config.py
+.idea/
 *.json
 
 # Created by https://www.gitignore.io/api/macOS

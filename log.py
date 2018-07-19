@@ -2,7 +2,7 @@
 
 import logging.config
 
-from value import LOGGING_CONFIG
+from config import LOGGING_CONFIG
 
 #日志配置
 logging.config.dictConfig(LOGGING_CONFIG)
