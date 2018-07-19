@@ -226,6 +226,7 @@ class Info2(object):
         if(len(diff) != 0):
             self.send_email_new(diff)
         self.save_date()
+        logger.info('successful work')
 
 
 
