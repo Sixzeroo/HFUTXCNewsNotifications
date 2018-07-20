@@ -2,7 +2,7 @@
 
 from email.header import Header
 from email.mime.text import MIMEText
-from smtplib import SMTP
+from smtplib import SMTP_SSL
 
 from config import EMAIL_CONFIG
 
@@ -14,7 +14,7 @@ class Email(object):
         '''
         SMTP服务器SSL发送的初识设置
         '''
-        self.smtp=SMTP(EMAIL_CONFIG['host_server'],EMAIL_CONFIG['port'])
+        self.smtp=SMTP_SSL(EMAIL_CONFIG['host_server'],EMAIL_CONFIG['port'])
         self.smtp.set_debuglevel(1)
         self.smtp.login(EMAIL_CONFIG['sender_mail'],EMAIL_CONFIG['passwd'])
         self.sender=EMAIL_CONFIG['sender']
