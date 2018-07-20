@@ -1,9 +1,13 @@
 ## 网站通知更新推送
 
-通过定时爬取合肥工业大学宣城校区官网的通知页面，获得更新信息。
-通过指定的过滤方案判断是否进行邮件通知
+通过定时爬取合肥工业大学宣城校区官网的通知页面或者个人成绩信息，获得更新信息。
 
 ## 使用
+
+### 下载项目
+```
+git clone git@github.com:Sixzeroo/HFUTXCNewsNotifications.git 
+```
 
 ### 设置配置信息
 创建`config.py`配置文件如下：
@@ -91,4 +95,12 @@ LOGGING_CONFIG={
 ```
 
 ### 设置定时信息
-在服务器中通过contab设置定时执行启动脚本
+编辑`crontabfile`文件配置定时信息
+
+### Docker构建
+运行脚本`build_docker.sh`构建Docker镜像
+
+### 启动服务
+```
+sudo docker-compose up -d
+```
